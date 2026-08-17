@@ -1,0 +1,30 @@
+Lua
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer or Players.PlayerAdded:Wait()
+
+-- 1. สร้าง RaycastParams
+local raycastParams = RaycastParams.new()
+raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+
+-- 2. ใส่ตัวละครของผู้ยิงลงในรายการยกเว้น (ไม่ให้ยิงโดนตัวเอง)
+if player.Character then
+    raycastParams.FilterDescendantsInstances = {player.Character}
+end
+
+-- 3. กำหนดจุดเริ่มต้น และทิศทาง/ระยะยิง (ตัวอย่าง: ยิงออกจากจุดที่กำหนด)
+local origin = Vector3.new(0, 10, 0) -- จุดเริ่มต้นของกระสุน
+local lookVector = Vector3.new(0, 0, -1) -- ทิศทางที่ยิงไป
+local maxDistance = 100 -- ระยะยิงสูงสุด (บล็อก)
+
+-- สำคัญ: direction ต้องนำทิศทางมาคูณกับระยะทาง
+local direction = lookVector * maxDistance 
+
+-- 4. ยิง Raycast
+local raycastResult = workspace:Raycast(origin, direction, raycastParams)
+
+if raycastResult then
+    print("ยิงโดนวัตถุ: " .. raycastResult.Instance.Name)
+    print("ตำแหน่งที่ชน: ", raycastResult.Position)
+else
+    print("ไม่โดนอะไรเลย")
+end
